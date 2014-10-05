@@ -25,7 +25,13 @@
   "keywords": [
     "compute.io",
     "compute",
-    "computation"
+    "computation",
+    "statistics",
+    "stats",
+    "standard deviation",
+    "sample standard deviation",
+    "stdev",
+    "nan"
   ],
   "bugs": {
     "url": "https://github.com/compute-io/nanstdev/issues"
