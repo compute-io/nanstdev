@@ -7,14 +7,14 @@ nanstdev
 The biased [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation) is defined as
 
 <div class="equation" align="center" data-raw-text="s = \sqrt{\frac{1}{N} \sum_{i=0}^{N-1} \left(x_i - \overline{x} \right)^2}" data-equation="eq:biased_stdev">
-	<img src="" alt="Equation for the biased sample standard deviation.">
+	<img src="https://cdn.rawgit.com/compute-io/nanstdev/b6c317ccb52876d2cca0b06b4c2aed5fa967e6af/docs/img/eqn2.svg" alt="Equation for the biased sample standard deviation.">
 	<br>
 </div>
 
 and the unbiased [standard deviation](http://en.wikipedia.org/wiki/Standard_deviation) is defined as
 
 <div class="equation" align="center" data-raw-text="s =\sqrt{\frac{1}{N-1} \sum_{i=0}^{N-1} \left(x_i - \overline{x} \right)^2}" data-equation="eq:stdev">
-	<img src="" alt="Equation for the sample standard deviation.">
+	<img src="https://cdn.rawgit.com/compute-io/nanstdev/b6c317ccb52876d2cca0b06b4c2aed5fa967e6af/docs/img/eqn1.svg" alt="Equation for the sample standard deviation.">
 	<br>
 </div>
 
@@ -210,19 +210,65 @@ s = nanstdev( matrix( [10,0] ) );
 ## Examples
 
 ``` javascript
-var nanstdev = require( 'compute-nanstdev' );
+var matrix = require( 'dstructs-matrix' ),
+	nanstdev = require( 'compute-nanstdev' );
 
-var data = new Array( 1000 );
+var data,
+	mat,
+	mu,
+	i;
 
-for ( var i = 0; i < data.length; i++ ) {
+// Plain arrays...
+data = new Array( 1000 );
+for ( i = 0; i < data.length; i++ ) {
 	if ( i%5 === 0 ) {
 		data[ i ] = NaN;
 	} else {
 		data[ i ] = Math.random() * 100;
 	}
 }
+mu = nanstdev( data );
 
-console.log( nanstdev( data ) );
+// Object arrays (accessors)...
+function getValue( d ) {
+	return d.x;
+}
+for ( i = 0; i < data.length; i++ ) {
+	data[ i ] = {
+		'x': data[ i ]
+	};
+}
+mu = nanstdev( data, {
+	'accessor': getValue
+});
+
+// Typed arrays...
+// only Float64Array and Float32Array support NaN
+data = new Float64Array( 1000 );
+for ( i = 0; i < data.length; i++ ) {
+	if ( i%5 === 0 ) {
+		data[ i ] = NaN;
+	} else {
+		data[ i ] = Math.random() * 100;
+	}
+}
+mu = nanstdev( data );
+
+// Matrices (along rows)...
+mat = matrix( data, [100,10], 'float64' );
+mu = nanstdev( mat, {
+	'dim': 1
+});
+
+// Matrices (along columns)...
+mu = nanstdev( mat, {
+	'dim': 2
+});
+
+// Matrices (custom output data type)...
+mu = nanstdev( mat, {
+	'dtype': 'uint8'
+});
 ```
 
 To run the example code from the top-level application directory,
